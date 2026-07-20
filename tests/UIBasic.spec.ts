@@ -68,7 +68,7 @@ test("test with client app", async ({ page }) => {
   console.log(await cardDetails.allTextContents());
 });
 
-test.only("UI controls", async ({ page }) => {
+test("UI controls", async ({ page }) => {
   await page.goto("https://rahulshettyacademy.com/loginpagePractise/");
   const userNameField = page.locator("#username");
   const passwordField = page.locator("#password");
@@ -96,7 +96,24 @@ test.only("UI controls", async ({ page }) => {
 test("Child window handeling", async ({ page, context }) => {
   await page.goto("https://rahulshettyacademy.com/loginpagePractise/");
   const docLink = page.locator("[href*=documents-request]");
-  const docLinkPage = context.waitForEvent("page");
+  const userNameField = page.locator("#username");
 
-  docLink.click();
+  const [newPage] = await Promise.all([
+    context.waitForEvent("page"),
+    docLink.click(),
+  ]);
+
+  const newPageTxt = await newPage.locator(".red").innerText();
+
+  const emailTxt = newPageTxt.split("@");
+  const emailSplitted = emailTxt[1].split(" ")[0];
+
+  await userNameField.fill(emailSplitted);
+  const inputText = await userNameField.inputValue();
+  console.log(inputText);
+  expect(await userNameField.inputValue()).toBe(emailSplitted);
+
+  const checkLink = newPage.locator(".theme-btn").last();
+
+  await checkLink.click();
 });
