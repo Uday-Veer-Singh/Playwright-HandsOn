@@ -105,7 +105,7 @@ test("client app login", async ({ page }) => {
   console.log(orderId);
 });
 
-test.only("Client app order history, verify order id", async ({ page }) => {
+test("Client app order history, verify order id", async ({ page }) => {
   await page.goto("https://rahulshettyacademy.com/client/auth/login");
 
   const email = "udaythakur.shely@gmail.com";

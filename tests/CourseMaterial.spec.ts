@@ -18,7 +18,6 @@ test("@Webst Client App login", async ({ page }) => {
   const count = await products.count();
   for (let i = 0; i < count; ++i) {
     if ((await products.nth(i).locator("b").textContent()) === productName) {
-      //add to cart
       await products.nth(i).locator("text= Add To Cart").click();
       break;
     }
@@ -71,7 +70,7 @@ test("@Webst Client App login", async ({ page }) => {
   expect(orderId.includes(orderIdDetails)).toBeTruthy();
 });
 
-test("@Webst Client App login", async ({ page }) => {
+test("Client App login", async ({ page }) => {
   //js file- Login js, DashboardPage
   const email = "anshika@gmail.com";
   const productName = "ZARA COAT 3";
