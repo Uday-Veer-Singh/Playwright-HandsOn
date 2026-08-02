@@ -21,12 +21,12 @@ export default defineConfig({
   timeout: 30 * 1000,
 
   /*Expect Timeout*/
-  expect: {
-    timeout: 5000,
-  },
+  // expect: {
+  //   timeout: 5000,
+  // },
 
   /* Run tests in files in parallel */
-  fullyParallel: true,
+  fullyParallel: false,
 
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
@@ -45,18 +45,20 @@ export default defineConfig({
     /* Base URL to use in actions like `await page.goto('')`. */
     // baseURL: 'http://localhost:3000',
 
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: "on-first-retry",
-
     /*Action Timeout */
     actionTimeout: 10000,
+
+    /*Navigation Timeout */
+
     navigationTimeout: 10000,
 
-    /*Browser */
     browserName: "chromium",
 
-    /* Headless */
     headless: true,
+    screenshot: "off",
+
+    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+    trace: "off",
   },
 
   /* Configure projects for major browsers */

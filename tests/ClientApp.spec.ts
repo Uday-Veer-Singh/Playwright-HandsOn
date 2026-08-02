@@ -22,20 +22,32 @@ test("client app login", async ({ page }) => {
 
   await page.waitForLoadState("networkidle");
 
-  const productCount = await products.count();
+  const productCard = products.filter({
+    hasText: productName,
+  });
 
-  for (let i = 0; i < productCount; i++) {
-    if ((await products.nth(i).locator("b").textContent()) === productName) {
-      await products.nth(i).locator("text= Add To Cart").click();
-      break;
-    }
-  }
+  const addToCartButton = productCard.getByRole("button", {
+    name: /Add To Cart/i,
+  });
 
-  await page.locator("[routerlink*='cart']").click();
-  await page.locator("div li").first().waitFor();
-  const itemCheck = await expect(
-    page.locator("h3", { hasText: productName })
-  ).toBeVisible();
+  await addToCartButton.click();
+
+  // Synchronize with the completed add-to-cart operation.
+  await expect(page.locator("#toast-container")).toContainText(
+    "Product Added To Cart"
+  );
+
+  const cartButton = page.locator("[routerlink*='cart']");
+  await expect(cartButton).toBeVisible();
+  await cartButton.click();
+
+  // Verify the actual expected product instead of a generic div/li.
+  const cartProduct = page.locator(".cartSection").filter({
+    hasText: productName,
+  });
+
+  await expect(cartProduct).toBeVisible();
+  await expect(cartProduct).toContainText(productName);
 
   await page.getByText("Checkout", { exact: true }).click();
 

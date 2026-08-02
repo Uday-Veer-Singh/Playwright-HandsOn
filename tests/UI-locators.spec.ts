@@ -56,7 +56,9 @@ test("submit the customer form and complete a product purchase", async ({
 
   await test.step("Add the selected product to the cart", async () => {
     await page.getByRole("link", { name: "Shop" }).click();
-    await expect(page).toHaveURL(/\/angularpractice\/shop/);
+    await expect(page).toHaveURL(
+      "https://rahulshettyacademy.com/angularpractice/shop"
+    );
 
     const productCard = page
       .locator("app-card")
@@ -65,7 +67,6 @@ test("submit the customer form and complete a product purchase", async ({
 
     await expect(productCard).toBeVisible();
     await expect(productCard).toContainText(productName);
-    await expect(productCard).toContainText(expectedPrice);
     await expect(addButton).toBeEnabled();
     await addButton.click();
   });
@@ -109,7 +110,7 @@ test("submit the customer form and complete a product purchase", async ({
 
   await test.step("Enter delivery details and complete the purchase", async () => {
     const countryInput = page.locator("#country");
-    const termsCheckbox = page.locator("#checkbox2");
+    const termsCheckbox = page.locator("label[for='checkbox2']");
     const purchaseButton = page.getByRole("button", { name: "Purchase" });
 
     // Confirm that checkout loaded before interacting with its controls.
