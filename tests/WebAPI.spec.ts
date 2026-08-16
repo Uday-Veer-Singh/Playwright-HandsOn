@@ -2,7 +2,7 @@
 
 import { test, expect, request } from "@playwright/test";
 
-const loginPayload = {
+export const loginPayload = {
   userEmail: "udaythakur.shely@gmail.com",
   userPassword: "Usually@12",
 };
