@@ -1,11 +1,13 @@
 /** @format */
 import { request, expect, test } from "@playwright/test";
 import { loginPayload } from "../../tests/WebAPI.spec";
+import { apiContext } from "../";
 
 export class APIUtils {
-  constructor(apiCotext) {}
-  async getLoginToken() {
-    const loginResponse = await request.post(
+  constructor(apiContext) {}
+  async getToken() {
+    //Login API Call to get the token
+    const loginResponse = await apiContext.post(
       "https://rahulshettyacademy.com/api/ecom/auth/login",
       {
         data: loginPayload,
@@ -15,6 +17,7 @@ export class APIUtils {
     expect(loginResponse.ok()).toBeTruthy();
     const loginResponseBody = await loginResponse.json();
     const loginToken = loginResponseBody.token;
+    console.log(loginToken);
     return loginToken;
   }
 }
