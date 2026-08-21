@@ -15,7 +15,7 @@ import { defineConfig, devices } from "@playwright/test";
  */
 export default defineConfig({
   /*Test Directory*/
-  testDir: "./tests",
+  testDir: "./e2e/tests",
 
   /*Test Timeout*/
   timeout: 30 * 1000,
