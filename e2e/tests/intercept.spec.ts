@@ -38,14 +38,16 @@ test("check no-product in orders with intercept", async ({ page }) => {
   const orderApiUrl = `https://rahulshettyacademy.com/api/ecom/order/get-orders-for-customer/*`;
 
   await page.route(orderApiUrl, async (route) => {
-    const response = await page.request.fetch(route.request());
-    // const response = await route.fetch();
+    // const response = await page.request.fetch(route.request());
+    const response = await route.fetch();
 
     await route.fulfill({
       response,
       json: fakeOrderPayload,
     });
   });
+
+  // intercepting response -> API response -> (playwright fake response) -> browser -> render data
 
   await page.locator("button[routerlink*='myorders']").click();
   const rows = page.locator("tbody tr");
