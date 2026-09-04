@@ -8,7 +8,7 @@ import {
   type APIRequestContext,
 } from "@playwright/test";
 // Match the exact capitalization of the APIUtils.ts filename.
-import { APIUtils } from "../support/utils/APIUtils";
+import { APIUtils } from "../support/utils/apiUtils";
 // Import reusable, strongly typed test data from fixture modules.
 import { orderPayload } from "../support/fixtures/orderPayload";
 import { loginPayload } from "../support/fixtures/loginPayload";

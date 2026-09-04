@@ -7,7 +7,7 @@ import {
   type APIRequestContext,
 } from "@playwright/test";
 
-import { APIUtils } from "../support/utils/APIUtils";
+import { APIUtils } from "../support/utils/apiUtils";
 import { orderPayload } from "../support/fixtures/orderPayload";
 import { loginPayload } from "../support/fixtures/loginPayload";
 import { fakeOrderPayload } from "../support/fixtures/fakeOrderPayload";
