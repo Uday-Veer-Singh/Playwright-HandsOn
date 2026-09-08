@@ -142,7 +142,7 @@ Complete the Playwright code for given manual Instructions.
 */
 
 import { test, expect } from "@playwright/test";
-import { BASE_URL, eventHubLogin } from "../helpers/eventHubAuth";
+import { BASE_URL, eventHubLogin } from "../../../helpers/auth/event-hub-login";
 
 test("Create a brand new event from the admin panel, then complete a booking for that event, and finally verify the seat count drops by exactly 1.", async ({
   page,

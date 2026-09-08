@@ -7,10 +7,10 @@ import {
   type APIRequestContext,
 } from "@playwright/test";
 
-import { APIUtils } from "../support/utils/apiUtils";
-import { orderPayload } from "../support/fixtures/orderPayload";
-import { loginPayload } from "../support/fixtures/loginPayload";
-import { fakeOrderPayload } from "../support/fixtures/fakeOrderPayload";
+import { APIUtils } from "../../helpers/api/api-utils";
+import { orderPayload } from "../../data/api/order-payload";
+import { loginPayload } from "../../data/api/login-payload";
+import { fakeOrderPayload } from "../../data/mocks/no-orders-response";
 
 let apiContext: APIRequestContext;
 let apiUtils: APIUtils;

@@ -7,6 +7,9 @@ node_modules/
 /playwright/.cache/
 /playwright/.auth/
 
+# Local rollback snapshots created before repository reorganizations
+.codex-backups/
+
 # Local credentials and environment configuration
 .env
 .env.*

@@ -2,9 +2,9 @@
 
 // Import this as a type because it is used only for TypeScript checking.
 import type { APIRequestContext } from "@playwright/test";
-// Import the fixture types instead of importing specific fixture values.
-import type { LoginPayload } from "../fixtures/loginPayload";
-import type { OrderPayload } from "../fixtures/orderPayload";
+// Import payload types without coupling the helper to specific test-data values.
+import type { LoginPayload } from "../../data/api/login-payload";
+import type { OrderPayload } from "../../data/api/order-payload";
 
 // Describe the portion of the successful login response that this helper uses.
 interface LoginResponseBody {

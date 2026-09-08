@@ -1,7 +1,7 @@
 /** @format */
 
 import { test, expect } from "@playwright/test";
-import { clientAppLoginAuth } from "../support/helpers/clientAppLoginAuth";
+import { clientAppLoginAuth } from "../../helpers/auth/client-app-login";
 import { request } from "node:http";
 
 test("Abort Calls Intercept", async ({ page }) => {

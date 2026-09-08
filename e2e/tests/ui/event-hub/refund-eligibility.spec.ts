@@ -108,7 +108,7 @@ Questions for this assignment
 Complete Playwright code for given assignment instructions
 */
 import { test, expect } from "@playwright/test";
-import { eventHubLogin } from "../helpers/eventHubAuth";
+import { eventHubLogin } from "../../../helpers/auth/event-hub-login";
 
 test("Single ticket booking is eligible for refund", async ({ page }) => {
   await eventHubLogin(page);

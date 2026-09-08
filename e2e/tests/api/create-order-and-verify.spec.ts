@@ -7,11 +7,11 @@ import {
   request,
   type APIRequestContext,
 } from "@playwright/test";
-// Match the exact capitalization of the APIUtils.ts filename.
-import { APIUtils } from "../support/utils/apiUtils";
-// Import reusable, strongly typed test data from fixture modules.
-import { orderPayload } from "../support/fixtures/orderPayload";
-import { loginPayload } from "../support/fixtures/loginPayload";
+// Import the reusable API helper from the shared helper layer.
+import { APIUtils } from "../../helpers/api/api-utils";
+// Import reusable, strongly typed API test data.
+import { orderPayload } from "../../data/api/order-payload";
+import { loginPayload } from "../../data/api/login-payload";
 
 let apiContext: APIRequestContext; // Shared API context created before this file's tests.
 let apiUtils: APIUtils; // Shared helper that performs the reusable API operations.

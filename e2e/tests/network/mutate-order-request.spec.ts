@@ -1,7 +1,7 @@
 /** @format */
 
 import { test, expect } from "@playwright/test";
-import { clientAppLoginAuth } from "../support/helpers/clientAppLoginAuth";
+import { clientAppLoginAuth } from "../../helpers/auth/client-app-login";
 
 const orderApiUrl = "**/api/ecom/order/get-orders-details?id=*";
 
