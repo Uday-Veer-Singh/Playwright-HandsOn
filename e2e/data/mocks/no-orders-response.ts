@@ -1,11 +1,11 @@
 /** @format */
 
-export interface FakeOrderPayload {
+export interface NoOrdersResponse {
   data: [];
   message: string;
 }
 
-export const fakeOrderPayload: FakeOrderPayload = {
+export const noOrdersResponse: NoOrdersResponse = {
   data: [],
   message: "No Orders",
 };

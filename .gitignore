@@ -6,6 +6,7 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+/storageState.json
 
 # Local rollback snapshots created before repository reorganizations
 .codex-backups/

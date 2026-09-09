@@ -1,18 +1,24 @@
 /** @format */
 
-import { expect, Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
+import {
+  APP_URLS,
+  CLIENT_APP_USER,
+  type EmailCredentials,
+} from "../../config/test-config";
 
-export const BASE_URL = "https://rahulshettyacademy.com/client/#/auth";
-export const email = "udaythakur.shely@gmail.com";
-export const password = "Usually@12";
-
-export async function clientAppLoginAuth(page: Page): Promise<void> {
-  await page.goto(`${BASE_URL}/login`);
+export async function loginToClientApp(
+  page: Page,
+  credentials: EmailCredentials = CLIENT_APP_USER
+): Promise<void> {
+  await page.goto(APP_URLS.clientApp.login);
 
   await expect(page.getByText("Log in")).toBeVisible();
 
-  await page.getByPlaceholder("email@example.com").fill(email);
-  await page.getByPlaceholder("enter your passsword").fill(password);
+  await page.getByPlaceholder("email@example.com").fill(credentials.email);
+  await page
+    .getByPlaceholder("enter your passsword")
+    .fill(credentials.password);
   await page.locator("#login").click();
 
   await expect(page.locator(".logo-holder")).toBeVisible();

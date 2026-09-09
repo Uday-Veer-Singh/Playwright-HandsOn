@@ -2,8 +2,10 @@
 
 // Import this as a type because it is used only for TypeScript checking.
 import type { APIRequestContext } from "@playwright/test";
-// Import payload types without coupling the helper to specific test-data values.
-import type { LoginPayload } from "../../data/api/login-payload";
+import {
+  CLIENT_APP_API,
+  type EmailCredentials,
+} from "../../config/test-config";
 import type { OrderPayload } from "../../data/api/order-payload";
 
 // Describe the portion of the successful login response that this helper uses.
@@ -19,19 +21,20 @@ interface OrderResponseBody {
 }
 
 // Keep reusable API operations separate from browser Page Objects.
-export class APIUtils {
-  // Parameter properties declare and initialize both private class fields.
-  constructor(
-    private readonly apiContext: APIRequestContext,
-    private readonly loginPayload: LoginPayload
-  ) {}
+export class ClientAppApi {
+  constructor(private readonly apiContext: APIRequestContext) {}
 
   // Log in through the API and resolve to a token string.
-  async getToken(): Promise<string> {
+  async login(credentials: EmailCredentials): Promise<string> {
     // Wait until Playwright receives the login HTTP response.
     const loginResponse = await this.apiContext.post(
-      "https://rahulshettyacademy.com/api/ecom/auth/login",
-      { data: this.loginPayload }
+      CLIENT_APP_API.login,
+      {
+        data: {
+          userEmail: credentials.email,
+          userPassword: credentials.password,
+        },
+      }
     );
 
     // Fail with useful response information instead of using an undefined token.
@@ -63,7 +66,7 @@ export class APIUtils {
   ): Promise<string> {
     // Use the API context stored by the constructor and await the HTTP response.
     const orderResponse = await this.apiContext.post(
-      "https://rahulshettyacademy.com/api/ecom/order/create-order",
+      CLIENT_APP_API.createOrder,
       {
         data: orderPayload, // Playwright serializes this typed object as JSON.
         headers: {

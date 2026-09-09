@@ -3,7 +3,15 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test:e2e": "playwright test",
+    "test:e2e:list": "playwright test --list",
+    "test:e2e:ui": "playwright test --grep \"@ui\"",
+    "test:e2e:api": "playwright test --grep \"@api\"",
+    "test:e2e:network": "playwright test --grep \"@network\"",
+    "test:e2e:auth": "playwright test --grep \"@auth\"",
+    "test:e2e:fixtures": "playwright test --grep \"@fixtures\""
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

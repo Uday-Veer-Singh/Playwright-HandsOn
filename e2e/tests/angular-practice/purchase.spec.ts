@@ -1,10 +1,11 @@
 /** @format */
 
 import { test, expect } from "@playwright/test";
+import { APP_URLS } from "../../config/test-config";
 
-test("submit the customer form and complete a product purchase", async ({
-  page,
-}) => {
+test("submit the customer form and complete a product purchase", {
+  tag: ["@ui", "@angular-practice", "@checkout"],
+}, async ({ page }) => {
   const customerName = "badshah";
   const customerEmail = "badshah@123";
   const customerPassword = "Usually@12";
@@ -14,7 +15,7 @@ test("submit the customer form and complete a product purchase", async ({
   const deliveryCountry = "India";
 
   await test.step("Submit the customer form successfully", async () => {
-    await page.goto("https://rahulshettyacademy.com/angularpractice/");
+    await page.goto(APP_URLS.angularPractice.home);
 
     // Use form-scoped locators because the page contains duplicate name fields.
     const nameInput = page.locator('form input[name="name"]');
@@ -56,9 +57,7 @@ test("submit the customer form and complete a product purchase", async ({
 
   await test.step("Add the selected product to the cart", async () => {
     await page.getByRole("link", { name: "Shop" }).click();
-    await expect(page).toHaveURL(
-      "https://rahulshettyacademy.com/angularpractice/shop"
-    );
+    await expect(page).toHaveURL(APP_URLS.angularPractice.shop);
 
     const productCard = page
       .locator("app-card")

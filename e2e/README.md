@@ -1,60 +1,103 @@
-# E2E test organization
+# E2E architecture
 
-The suite is organized first by **how a test works**, then by the application area when that adds useful context.
+The executable specs are grouped by application and feature—the behavior they protect. Technical concerns such as UI, API setup, authentication, network interception, and custom fixtures are represented with tags and reusable support code.
 
 ```text
 e2e/
-|-- tests/                 # Executable Playwright specs
-|   |-- ui/                # Browser-only user journeys
-|   |   |-- basics/
-|   |   |-- ecommerce/
-|   |   `-- event-hub/
-|   |-- api/               # API-assisted setup followed by verification
-|   |-- network/           # Request interception, response mocking, and blocking
-|   |-- fixtures/          # Specs focused on custom Playwright fixtures
-|   `-- auth/              # Authentication and storage-state scenarios
-|-- fixtures/              # Custom Playwright test fixtures injected into specs
-|-- helpers/               # Reusable actions that are not fixtures
-|   |-- api/
-|   `-- auth/
-`-- data/                  # Typed request payloads and mock response bodies
-    |-- api/
-    `-- mocks/
+|-- tests/                         # Executable specifications
+|   |-- angular-practice/
+|   |-- client-app/
+|   |   |-- authentication/
+|   |   |-- catalog/
+|   |   |-- checkout/
+|   |   `-- orders/
+|   |-- event-hub/
+|   |   |-- bookings/
+|   |   `-- events/
+|   `-- practice/
+|-- config/
+|   `-- test-config.ts             # URLs, API routes, and test accounts
+|-- fixtures/
+|   `-- test.ts                    # Composable Playwright fixtures
+|-- helpers/
+|   |-- api/                       # Domain API clients
+|   `-- auth/                      # Reusable login operations
+|-- pages/
+|   |-- client-app/                # Reused catalog and order behavior
+|   `-- event-hub/                 # Reused booking behavior
+`-- data/                          # Typed payloads and mocked responses
 ```
 
-## Where a new file belongs
+## DRY boundaries
 
-| If the test mainly... | Put it in... |
+- Specs contain business intent and assertions.
+- Fixtures create isolated preconditions and automatically follow Playwright's test lifecycle.
+- Page objects contain stable page behavior reused by multiple specs.
+- Helpers contain reusable operations that do not need fixture lifecycle management.
+- Config is the single source of truth for URLs, API routes, and credentials.
+- Data modules contain request payloads and mocked responses, not browser actions.
+
+Do not extract a one-off test step merely to reduce line count. Extract behavior when it is repeated and has one stable meaning.
+
+## Custom fixtures
+
+Import the shared `test` when a spec needs one of these preconditions:
+
+| Fixture | Provides |
 | --- | --- |
-| Drives the browser through a user journey | `tests/ui/` |
-| Uses direct API calls for setup or validation | `tests/api/` |
-| Uses `page.route()` to inspect, change, mock, or block traffic | `tests/network/` |
-| Demonstrates or validates custom fixture behavior | `tests/fixtures/` |
-| Reuses browser authentication or storage state | `tests/auth/` |
-| Defines values injected through `test.extend()` | `fixtures/` |
-| Provides reusable login or API operations | `helpers/` |
-| Exports payloads or mock response objects | `data/` |
+| `authenticatedClientPage` | A client-app page authenticated through the UI |
+| `apiToken` | An API authentication token |
+| `apiCreatedOrder` | An isolated order created through the API |
+| `apiAuthenticatedClientPage` | A client-app page authenticated with the API token |
+| `authenticatedEventHubPage` | An EventHub page authenticated through the UI |
 
-`create-order-and-verify.spec.ts` is in `tests/api/` because its distinguishing approach is API-created test setup, even though the final assertion is made in the UI.
+```ts
+import { test, expect } from "../../../fixtures/test";
+```
 
-`mock-events-banner.spec.ts` is kept as the current work-in-progress scaffold. It belongs in `tests/network/` because its intended approach is API response mocking; no missing assertions were invented during this folder-only reorganization.
+Tests that need only Playwright's built-in fixtures should continue importing from `@playwright/test`.
 
-## Run by approach
+## Tags
+
+Tags describe cross-cutting execution types without controlling the folder layout:
+
+- `@ui` — browser behavior
+- `@api` — direct API interaction or API-created setup
+- `@network` — request interception or response mocking
+- `@auth` — authentication or storage-state behavior
+- Application and feature tags such as `@client-app`, `@event-hub`, `@orders`, and `@checkout`
+
+## Commands
 
 ```powershell
-npx playwright test
-npx playwright test e2e/tests/ui
-npx playwright test e2e/tests/api
-npx playwright test e2e/tests/network
-npx playwright test e2e/tests/fixtures
-npx playwright test e2e/tests/auth
+npm run test:e2e
+npm run test:e2e:list
+npm run test:e2e:ui
+npm run test:e2e:api
+npm run test:e2e:network
+npm run test:e2e:auth
+npm run test:e2e:fixtures
 ```
 
-Use `npx playwright test --list` for a fast discovery and import check without running the browser scenarios.
+You can also select a feature directly:
 
-## Naming conventions
+```powershell
+npx playwright test --grep "@client-app"
+npx playwright test --grep "@event-hub"
+npx playwright test --grep "(?=.*@client-app)(?=.*@orders)"
+```
 
-- Use lowercase kebab-case filenames, ending executable specs with `.spec.ts`.
-- Keep assertions in specs; extract only genuinely reusable actions into helpers or fixtures.
-- Keep request payloads and mocked response bodies in `data/`, not in Playwright `fixtures/`.
-- Add another application subfolder under `tests/ui/` when several UI specs cover the same application.
+## Configuration overrides
+
+The committed demo values remain defaults so the existing suite keeps working. Set these environment variables locally or in CI to use different accounts without changing test files:
+
+- `CLIENT_APP_EMAIL`
+- `CLIENT_APP_PASSWORD`
+- `EVENT_HUB_EMAIL`
+- `EVENT_HUB_PASSWORD`
+- `PRACTICE_USERNAME`
+- `PRACTICE_PASSWORD`
+
+`mock-events-banner.spec.ts` derives its six-event and four-event scenarios from one typed event dataset.
+
+Authentication state created by `storage-state.spec.ts` is written to that test's temporary output directory and cleaned by Playwright. Authentication state is never shared through a committed root-level JSON file.
