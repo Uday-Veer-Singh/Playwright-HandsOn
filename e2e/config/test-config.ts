@@ -10,7 +10,9 @@ function envOrDefault(name: string, fallback: string): string {
 }
 
 const ACADEMY_BASE_URL = "https://rahulshettyacademy.com";
-const EVENT_HUB_BASE_URL = "https://eventhub.rahulshettyacademy.com";
+const EVENT_HUB_BASE_UI_URL = "https://eventhub.rahulshettyacademy.com";
+const EVENT_HUB_API_BASE_URL =
+  "https://api.eventhub.rahulshettyacademy.com/api";
 
 export const APP_URLS = {
   clientApp: {
@@ -18,11 +20,11 @@ export const APP_URLS = {
     login: `${ACADEMY_BASE_URL}/client/auth/login`,
   },
   eventHub: {
-    home: EVENT_HUB_BASE_URL,
-    login: `${EVENT_HUB_BASE_URL}/login`,
-    events: `${EVENT_HUB_BASE_URL}/events`,
-    bookings: `${EVENT_HUB_BASE_URL}/bookings`,
-    adminEvents: `${EVENT_HUB_BASE_URL}/admin/events`,
+    home: EVENT_HUB_BASE_UI_URL,
+    login: `${EVENT_HUB_BASE_UI_URL}/login`,
+    events: `${EVENT_HUB_BASE_UI_URL}/events`,
+    bookings: `${EVENT_HUB_BASE_UI_URL}/bookings`,
+    adminEvents: `${EVENT_HUB_BASE_UI_URL}/admin/events`,
   },
   practice: {
     home: `${ACADEMY_BASE_URL}/practice`,
@@ -35,6 +37,13 @@ export const APP_URLS = {
   },
 } as const;
 
+export const EVENT_HUB_API = {
+  register: `${EVENT_HUB_API_BASE_URL}/auth/register`,
+  login: `${EVENT_HUB_API_BASE_URL}/auth/login`,
+  events: `${EVENT_HUB_API_BASE_URL}/events`,
+  bookings: `${EVENT_HUB_API_BASE_URL}/bookings`,
+} as const;
+
 export const CLIENT_APP_API = {
   login: `${ACADEMY_BASE_URL}/api/ecom/auth/login`,
   createOrder: `${ACADEMY_BASE_URL}/api/ecom/order/create-order`,
@@ -44,10 +53,7 @@ export const CLIENT_APP_API = {
 } as const;
 
 export const CLIENT_APP_USER: EmailCredentials = {
-  email: envOrDefault(
-    "CLIENT_APP_EMAIL",
-    "udaythakur.shely@gmail.com"
-  ),
+  email: envOrDefault("CLIENT_APP_EMAIL", "udaythakur.shely@gmail.com"),
   password: envOrDefault("CLIENT_APP_PASSWORD", "Usually@12"),
 };
 
@@ -60,3 +66,15 @@ export const PRACTICE_USER = {
   username: envOrDefault("PRACTICE_USERNAME", "rahulshettyacademy"),
   password: envOrDefault("PRACTICE_PASSWORD", "Learning@830$3mK2"),
 } as const;
+
+const uniqueId = Date.now();
+
+export const YAHOO_USER = {
+  email: `qa.yahoo.${uniqueId}@yahoo.com`,
+  password: "secret123",
+};
+
+export const GMAIL_USER = {
+  email: `qa.gmail.${uniqueId}@gmail.com`,
+  password: "secret123",
+};

@@ -20,7 +20,5 @@ export async function loginToEventHub(
   await page.locator('input[type="password"]').fill(credentials.password);
   await page.getByRole("button", { name: "Sign In" }).click();
 
-  await expect(
-    page.getByRole("link", { name: /Browse Events/ })
-  ).toBeVisible();
+  await expect(page.getByRole("button", { name: "Logout" })).toBeVisible();
 }
