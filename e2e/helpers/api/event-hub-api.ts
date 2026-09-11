@@ -1,6 +1,6 @@
 /** @format */
 
-import type { APIRequestContext } from "@playwright/test";
+import type { APIRequestContext, APIResponse } from "@playwright/test";
 import { EVENT_HUB_API, type EmailCredentials } from "../../config/test-config";
 
 interface LoginResponse {
@@ -11,6 +11,35 @@ interface EventResponse {
   data: Array<{
     id: number;
   }>;
+}
+
+export interface CreateEventPayload {
+  title: string;
+  description?: string;
+  category:
+    | "Conference"
+    | "Concert"
+    | "Sports"
+    | "Workshop"
+    | "Festival";
+  venue: string;
+  city: string;
+  eventDate: string;
+  price: number;
+  totalSeats: number;
+  imageUrl?: string;
+}
+
+export interface CreatedEvent {
+  id: number;
+  title: string;
+}
+
+interface CreateEventResponse {
+  data?: {
+    id?: number;
+    title?: string;
+  };
 }
 
 export interface CreateBookingPayload {
@@ -35,12 +64,7 @@ export class EventHubApi {
       data: user,
     });
 
-    if (!response.ok()) {
-      throw new Error(
-        `Login failed with HTTP ${response.status()}: ` +
-          (await response.text())
-      );
-    }
+    await this.ensureOk(response, `Login ${user.email}`);
 
     const body = (await response.json()) as LoginResponse;
 
@@ -52,17 +76,13 @@ export class EventHubApi {
 
     return body.token;
   }
+
   async getFirstEventID(token: string): Promise<number> {
     const response = await this.request.get(EVENT_HUB_API.events, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: this.authorizationHeaders(token),
     });
 
-    if (!response.ok()) {
-      throw new Error(
-        `Failed to fetch events with HTTP ${response.status()}: ` +
-          (await response.text())
-      );
-    }
+    await this.ensureOk(response, "Fetch events");
     const body = (await response.json()) as EventResponse;
     const eventId = body.data[0]?.id;
 
@@ -79,15 +99,11 @@ export class EventHubApi {
     payload: CreateBookingPayload
   ): Promise<number> {
     const response = await this.request.post(EVENT_HUB_API.bookings, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: this.authorizationHeaders(token),
       data: payload,
     });
-    if (!response.ok()) {
-      throw new Error(
-        `Failed to create booking with HTTP ${response.status()}: ` +
-          (await response.text())
-      );
-    }
+
+    await this.ensureOk(response, "Create booking");
 
     const body = (await response.json()) as BookingResponse;
     const bookingId = body.data?.id;
@@ -98,5 +114,59 @@ export class EventHubApi {
       );
     }
     return bookingId;
+  }
+
+  async createEvent(
+    token: string,
+    payload: CreateEventPayload
+  ): Promise<CreatedEvent> {
+    const response = await this.request.post(EVENT_HUB_API.events, {
+      headers: this.authorizationHeaders(token),
+      data: payload,
+    });
+
+    await this.ensureOk(response, "Create event");
+
+    const body = (await response.json()) as CreateEventResponse;
+    const eventId = body.data?.id;
+    const eventTitle = body.data?.title;
+
+    if (typeof eventId !== "number" || typeof eventTitle !== "string") {
+      throw new Error(
+        `Create-event response did not contain data.id and data.title: ` +
+          JSON.stringify(body)
+      );
+    }
+
+    return { id: eventId, title: eventTitle };
+  }
+
+  async deleteEvent(token: string, eventId: number): Promise<void> {
+    const response = await this.request.delete(
+      `${EVENT_HUB_API.events}/${eventId}`,
+      {
+        headers: this.authorizationHeaders(token),
+      }
+    );
+
+    await this.ensureOk(response, `Delete event ${eventId}`);
+  }
+
+  private authorizationHeaders(token: string): Record<string, string> {
+    return {
+      Authorization: `Bearer ${token}`,
+    };
+  }
+
+  private async ensureOk(
+    response: APIResponse,
+    operation: string
+  ): Promise<void> {
+    if (!response.ok()) {
+      throw new Error(
+        `${operation} failed with HTTP ${response.status()}: ` +
+          (await response.text())
+      );
+    }
   }
 }

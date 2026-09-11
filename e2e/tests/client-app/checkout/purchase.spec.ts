@@ -9,8 +9,6 @@ test(
   "a customer can purchase a product and find the order in history",
   { tag: ["@ui", "@client-app", "@checkout", "@orders"] },
   async ({ authenticatedClientPage: page }) => {
-    test.setTimeout(60_000);
-
     const productName = "iphone 13 pro";
     const catalogPage = new ClientAppCatalogPage(page);
 
@@ -73,7 +71,10 @@ test(
       .locator(".em-spacer-1 .ng-star-inserted")
       .textContent();
     const orderId = rawOrderId?.replaceAll("|", "").trim();
-    expect(orderId, "The confirmation page should show an order ID").toBeTruthy();
+    expect(
+      orderId,
+      "The confirmation page should show an order ID"
+    ).toBeTruthy();
 
     const ordersPage = new ClientAppOrdersPage(page);
     await ordersPage.open();

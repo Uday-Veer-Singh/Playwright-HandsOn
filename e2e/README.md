@@ -46,10 +46,12 @@ Import the shared `test` when a spec needs one of these preconditions:
 | Fixture | Provides |
 | --- | --- |
 | `authenticatedClientPage` | A client-app page authenticated through the UI |
-| `apiToken` | An API authentication token |
+| `apiToken` | A client-app API authentication token |
 | `apiCreatedOrder` | An isolated order created through the API |
 | `apiAuthenticatedClientPage` | A client-app page authenticated with the API token |
-| `authenticatedEventHubPage` | An EventHub page authenticated through the UI |
+| `authenticatedPage` | An EventHub page authenticated through the UI |
+| `authenticatedEventHubPage` | Alias of `authenticatedPage` for existing EventHub specs |
+| `createEvent` | A typed EventHub event created by API and deleted during teardown |
 
 ```ts
 import { test, expect } from "../../../fixtures/test";
