@@ -1,10 +1,21 @@
 /** @format */
 
-import { Workbook } from "exceljs";
+import { Workbook, type Worksheet } from "exceljs";
 
-async function writeExcelFile(
+type CellChange = {
+  rowChange: number;
+  colChange: number;
+};
+
+type CellPosition = {
+  row: number;
+  column: number;
+};
+
+export async function writeExcelFile(
   searchText: string,
-  replaceText: string,
+  replaceText: string | number,
+  change: CellChange,
   filePath: string
 ) {
   const workbook = new Workbook();
@@ -12,38 +23,38 @@ async function writeExcelFile(
 
   const sheet = workbook.getWorksheet("Sheet1");
 
-  const output = await readExcelFile(sheet, searchText);
-
   if (!sheet) {
-    console.log("Sheet not found");
-    return;
+    throw new Error("Sheet1 was not found");
   }
 
-  const cellValue = sheet.getCell(output.row, output.column);
-  cellValue.value = replaceText;
+  const output = findCell(sheet, searchText);
+
+  if (!output) {
+    throw new Error(`"${searchText}" was not found`);
+  }
+
+  const cell = sheet.getCell(
+    output.row + change.rowChange,
+    output.column + change.colChange
+  );
+
+  cell.value = replaceText;
   await workbook.xlsx.writeFile(filePath);
 }
 
-async function readExcelFile(sheet, searchText) {
-  let output = { row: 1, column: 1 };
+function findCell(
+  sheet: Worksheet,
+  searchText: string
+): CellPosition | undefined {
+  let output: CellPosition | undefined;
 
   sheet.eachRow((row, rowNumber) => {
-    // console.log(`Row ${rowNumber}:`);
-
     row.eachCell((cell, colNumber) => {
-      // console.log(`  Col ${colNumber}:`, cell.value);
-
       if (cell.value === searchText) {
-        output.row = rowNumber;
-        output.column = colNumber;
+        output = { row: rowNumber, column: colNumber };
       }
     });
   });
+
   return output;
 }
-
-writeExcelFile(
-  "Banana",
-  "Republic",
-  "C:/Users/Acer/OneDrive/Desktop/excelDownload.xlsx"
-);
